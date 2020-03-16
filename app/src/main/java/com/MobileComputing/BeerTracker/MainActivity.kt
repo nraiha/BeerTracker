@@ -9,10 +9,26 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
-    private val m0nNavigationItemSelectedListener =
-            BottomNavigationView.OnNavigationItemSelectedListener { item ->
+    private val navListener =
+        BottomNavigationView.OnNavigationItemSelectedListener { item ->
+            var sel_frag: Fragment? = null
+
+            when (item.itemId) {
+                R.id.navigation_main -> sel_frag = MainView.newInstance()
+                R.id.navigation_show_beer -> sel_frag =
+                    ShowBeerView.newInstance()
+                R.id.navigation_map -> sel_frag = MapView.newInstance()
+                R.id.navigation_settings -> sel_frag =
+                    SettingsView.newInstance()
+            }
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container, sel_frag!!).commit()
+            true
+        }
+
+/*
         when (item.itemId) {
-            R.id.navigation_main -> {
+                R.id.navigation_main -> {
                 val mainView = MainView.newInstance()
                 openFragment(mainView)
 
@@ -44,17 +60,34 @@ class MainActivity : AppCompatActivity() {
         transaction.addToBackStack(null)
         transaction.commit()
     }
-
+*/
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val bottomNav = findViewById<BottomNavigationView>(
+            R.id.bottom_navigation)
+        bottomNav.setOnNavigationItemSelectedListener(navListener)
+
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction().replace(
+                R.id.container, MainView.newInstance()).commit()
+
+        }
+
+        val mainView = MainView.newInstance()
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.container, mainView)
+        transaction.addToBackStack(null)
+        transaction.commit()
+    /*
         val bottomNavigation: BottomNavigationView =
                 findViewById(R.id.bottom_navigation)
-        bottomNavigation.setOnNavigationItemSelectedListener(
-                m0nNavigationItemSelectedListener)
+        bottomNavigation.setOnNavigationItemSelectedListener(navListener)
         val mainView = MainView.newInstance()
         openFragment(mainView)
+
+     */
     }
 }
 

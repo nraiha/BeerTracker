@@ -1,14 +1,16 @@
 package com.MobileComputing.BeerTracker
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 
-class AddBeerActivity : AppCompatActivity() {
+class AddBeerActivity : Fragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?)
+            : View? = inflater.inflate(
+        R.layout.view_map, container, false)
 }
