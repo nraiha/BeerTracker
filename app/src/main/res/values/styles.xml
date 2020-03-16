@@ -1,0 +1,30 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Hide app bar -->
+        <item name="android:windowNoTitle">true</item>
+        <!--  Color of the app bar -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <!--  Color of the status bar and contextual app bars-->
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <!--  Color of UI controls-->
+        <item name="colorAccent">@color/colorAccent</item>
+        <!--  Color of screen background-->
+        <item name="android:windowBackground">@color/windowBackground</item>
+        <!--  Color of UI text in the app bar-->
+        <item name="android:textColorPrimary">@color/textColorPrimary</item>
+        <!--  Color of the status bar -->
+        <item name="android:statusBarColor">@color/statusBarColor</item>
+        <!--  Color of the navigation bar -->
+        <item name="android:navigationBarColor">@color/navigationBarColor</item>
+    </style>
+
+    <style name="IconTheme" parent="AppTheme">
+        <item name="colorPrimary">@color/active_color</item>
+        <item name="android:textColorSecondary">@color/unactive_color</item>
+    </style>
+
+
+
+</resources>
