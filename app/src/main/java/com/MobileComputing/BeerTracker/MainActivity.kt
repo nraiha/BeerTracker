@@ -1,10 +1,12 @@
 package com.MobileComputing.BeerTracker
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.app.ActionBar
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.android.synthetic.main.view_main.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -80,6 +82,7 @@ class MainActivity : AppCompatActivity() {
         transaction.replace(R.id.container, mainView)
         transaction.addToBackStack(null)
         transaction.commit()
+
     /*
         val bottomNavigation: BottomNavigationView =
                 findViewById(R.id.bottom_navigation)

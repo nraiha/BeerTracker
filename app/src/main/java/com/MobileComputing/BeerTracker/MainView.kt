@@ -12,11 +12,19 @@ import kotlinx.android.synthetic.main.view_main.view.*
 
 class MainView : Fragment() {
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?)
-            : View {
-        return inflater.inflate(R.layout.view_main, container, false)
+                              savedInstanceState: Bundle?): View? {
+
+
+        val view: View = inflater.inflate(R.layout.view_main, container, false)
+
+        view.btn_addBeer.setOnClickListener {
+            val intent = Intent(activity, AddBeerActivity::class.java)
+            startActivity(intent)
+        }
+
+        // Return the fragment view/layout
+        return view
     }
 
     companion object {

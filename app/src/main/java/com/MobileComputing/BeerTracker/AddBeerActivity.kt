@@ -7,10 +7,11 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 
-class AddBeerActivity : Fragment() {
+class AddBeerActivity : AppCompatActivity() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?)
-            : View? = inflater.inflate(
-        R.layout.view_map, container, false)
+    override fun onCreate(savedInstanceState: Bundle?){
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_add_beer)
+    }
+
 }
