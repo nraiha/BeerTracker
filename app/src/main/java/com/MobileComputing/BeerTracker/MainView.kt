@@ -15,6 +15,7 @@ class MainView : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
+        /* Check if weight and sex is added. Print text if not */
 
         val view: View = inflater.inflate(R.layout.view_main, container, false)
 
