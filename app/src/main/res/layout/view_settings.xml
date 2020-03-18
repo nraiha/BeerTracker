@@ -12,7 +12,7 @@
         android:layout_height="58dp"
         android:gravity="center_vertical|center_horizontal"
         android:text="SEX"
-        android:textColor="#F7F3F3"
+        android:textColor="@color/textColorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.062"
@@ -27,6 +27,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:text="Select your sex"
+        android:textColor="@color/textColorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -39,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="#F7F3F3"
+            android:textColor="@color/textColorPrimary"
             android:text="male" />
 
         <RadioButton
@@ -47,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="#F7F3F3"
+            android:textColor="@color/textColorPrimary"
             android:text="female" />
     </RadioGroup>
 
@@ -57,6 +58,7 @@
         android:layout_height="45dp"
         android:ems="10"
         android:hint="Weight"
+        android:textColorHint="@color/textColorSecondary"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -71,7 +73,7 @@
         android:layout_height="58dp"
         android:gravity="center_vertical|center_horizontal"
         android:text="WEIGHT"
-        android:textColor="#F7F3F3"
+        android:textColor="@color/textColorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.062"
