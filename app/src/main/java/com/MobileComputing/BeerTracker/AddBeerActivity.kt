@@ -15,11 +15,11 @@ class AddBeerActivity : AppCompatActivity() {
         setContentView(R.layout.activity_add_beer)
 
         btn_save.setOnClickListener {
-            finish();
+            finish()
         }
 
         btn_cancel.setOnClickListener {
-            finish();
+            finish()
         }
     }
 

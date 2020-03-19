@@ -5,9 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.view_main.*
 import kotlinx.android.synthetic.main.view_main.view.*
 
 class MainView : Fragment() {
@@ -21,7 +19,7 @@ class MainView : Fragment() {
 
         view.btn_addBeer.setOnClickListener {
             val intent = Intent(activity, AddBeerActivity::class.java)
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(intent)
         }
 

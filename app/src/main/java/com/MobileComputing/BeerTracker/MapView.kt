@@ -14,5 +14,6 @@ class MapView : Fragment() {
 
     companion object {
         fun newInstance(): MapView = MapView()
+
     }
 }
