@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <color name="transparent_hint">#39FFFFFF</color>
     <!-- Nord Colorscheme -->
     <color name="nord0">#2E3440</color>
     <color name="nord1">#3B4252</color>

@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:textColor="@color/textColorPrimary"
-        android:text="Beers will be listed here when database is implemented and there is saved something"
+        android:text="Beers will be listed here when database is implemented and some data is inserted"
         android:gravity="center_vertical|center_horizontal"/>
 
 </LinearLayout>

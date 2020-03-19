@@ -1,9 +1,8 @@
 package com.MobileComputing.BeerTracker
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
@@ -42,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             R.id.navigation_map -> {
                 val mapView = MapView.newInstance()
                 openFragment(mapView)
-                return@OnNavigationItemSelectedListener true
+                return@OnNavigationItemSelectedListener trueo
             }
             R.id.navigation_settings -> {
 
@@ -78,10 +77,6 @@ class MainActivity : AppCompatActivity() {
 
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.container, mainView)
-
-        // ideally this is done so that when user leaves fragment, the fragment is not deleted it is just paused.
-        // and when the user returns to that fragment he/she continues from the same state it was left
-        // but how to prevent that the user cannot return to earlier fragment when back button pressed but just enter the main view fragment
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     /*
@@ -94,10 +89,9 @@ class MainActivity : AppCompatActivity() {
      */
     }
 
+    // to let addToBackStack to be enabled
     override fun onBackPressed() {
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.container, MainView.newInstance())
-        fragmentTransaction.commit()
+        // do nothing
     }
 }
 
