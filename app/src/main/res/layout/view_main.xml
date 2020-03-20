@@ -13,6 +13,19 @@
     android:layout_height="match_parent"
     tools:context=".MainView">
 
+    <TextView
+        android:layout_width="183dp"
+        android:layout_height="89dp"
+        android:text="welcome / user's current per mille level"
+        android:textColor="#FFFFFF"
+        android:textSize="25dp"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/btn_addBeer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.666" />
+
     <Button
         android:id="@+id/btn_addBeer"
         android:layout_width="191dp"

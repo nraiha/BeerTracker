@@ -1,6 +1,7 @@
 package com.MobileComputing.BeerTracker
 
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -91,7 +92,10 @@ class MainActivity : AppCompatActivity() {
 
     // to let addToBackStack to be enabled
     override fun onBackPressed() {
-        // do nothing
+        val fragment = this.supportFragmentManager.findFragmentById(R.id.container)
+        (fragment as? IfOnBackButtonPressed)?.onBackPressed()?.not()?.let {
+            super.onBackPressed()
+        }
     }
 }
 

@@ -65,7 +65,7 @@
         android:layout_width="179dp"
         android:layout_height="45dp"
         android:ems="10"
-        android:hint="BEER'S PER MILLS"
+        android:hint="ALCOHOL-%"
         android:textColorHint="@color/textColorSecondary"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"
