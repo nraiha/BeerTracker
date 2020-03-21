@@ -90,12 +90,8 @@ class MainActivity : AppCompatActivity() {
      */
     }
 
-    // to let addToBackStack to be enabled
-    override fun onBackPressed() {
-        val fragment = this.supportFragmentManager.findFragmentById(R.id.container)
-        (fragment as? IfOnBackButtonPressed)?.onBackPressed()?.not()?.let {
-            super.onBackPressed()
-        }
+    override fun onBackPressed()
+    {
     }
 }
 
