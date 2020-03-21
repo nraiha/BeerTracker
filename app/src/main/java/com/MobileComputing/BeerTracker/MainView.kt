@@ -9,7 +9,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.view_main.view.*
 
-class MainView : Fragment(), IfOnBackButtonPressed {
+class MainView : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -30,12 +30,5 @@ class MainView : Fragment(), IfOnBackButtonPressed {
 
     companion object {
         fun newInstance(): MainView = MainView()
-    }
-
-    override fun onBackPressed(): Boolean {
-        val dialogBuilder = context?.let { AlertDialog.Builder(it) }
-
-        //val dialog: AlertDialog = dialogBuilder.create()
-        return true
     }
 }
