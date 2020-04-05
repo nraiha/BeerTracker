@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">BeerTracker</string>
+
+
+
+    <string name="settings_weigh_hint">weight ..</string>
+    <string name="settings_sex_female">Female</string>
+    <string name="settings_sex_male">Male</string>
+
+    <string name="tag_SEX">SEX</string>
+    <string name="tag_WEIGHT">WEIGHT</string>
+    <string name="button_text_SAVE">SAVE</string>
+    <string name="button_text_CANCEL">CANCEL</string>
+</resources>
