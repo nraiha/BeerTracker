@@ -1,18 +1,22 @@
 package com.MobileComputing.BeerTracker
 
-import android.content.Context
+import android.location.Location
 import android.os.Bundle
-import android.widget.Toast
+import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.activity_add_beer.*
-import kotlinx.android.synthetic.main.list_view_item.*
-import java.time.LocalDateTime
 
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.toast
 
 class AddBeerActivity : AppCompatActivity() {
+
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var latLong: LatLng
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
@@ -43,6 +47,13 @@ class AddBeerActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+
+            }
+
+
+
             val beerItem = BeerItem(
                 uid = null,
                 beer_name = beerName,
@@ -55,11 +66,10 @@ class AddBeerActivity : AppCompatActivity() {
                 val db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "beers").build()
                 val uid = db.beerDao().insert(beerItem).toInt()
                 beerItem.uid = uid
-
                 db.close()
 
             }
-
+            toast("Entry added")
         }
 
         btn_cancel.setOnClickListener {
