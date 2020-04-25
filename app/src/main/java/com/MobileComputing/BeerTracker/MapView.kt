@@ -2,6 +2,7 @@ package com.MobileComputing.BeerTracker
 
 import android.app.Activity
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,10 +11,16 @@ import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.room.Room
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
+import java.util.*
+import com.google.android.gms.maps.model.Marker
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 
 
 class MapView : Fragment(), OnMapReadyCallback {
@@ -32,7 +39,7 @@ class MapView : Fragment(), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment
 
-        mapFragment?.getMapAsync(this)
+        mapFragment.getMapAsync(this)
     }
 
     override fun onMapReady(map: GoogleMap?) {
@@ -55,10 +62,27 @@ class MapView : Fragment(), OnMapReadyCallback {
         }
         else
         {
-
             ActivityCompat.requestPermissions(context as Activity, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION), 123)
         }
+        val geocoder = Geocoder(activity!!.applicationContext, Locale.getDefault())
 
+        doAsync {
+            val db = Room.databaseBuilder(activity!!.applicationContext, AppDatabase::class.java, "beers").build()
+            val beers = db.beerDao().getBeers()
+            db.close()
+
+            var title = ""
+            var city = ""
+            for (beer in beers )
+            {
+                var latLng = LatLng(beer.coord_lat, beer.coord_long)
+                val addressList = geocoder.getFromLocation(latLng.latitude, latLong.longitude, 1)
+                city = addressList[0].locality
+                title = addressList[0].getAddressLine(0)
+                val marker = googleMap.addMarker(MarkerOptions().position(latLng).snippet(title).title(city))
+                marker.showInfoWindow()
+            }
+        }
     }
 
     companion object {

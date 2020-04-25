@@ -1,13 +1,13 @@
 package com.MobileComputing.BeerTracker
 
+import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.room.Room
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.location.*
 import kotlinx.android.synthetic.main.activity_add_beer.*
 
 import org.jetbrains.anko.doAsync
@@ -16,7 +16,8 @@ import org.jetbrains.anko.toast
 class AddBeerActivity : AppCompatActivity() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var latLong: LatLng
+    private var lastLong : Double = 0.0
+    private var lastLat : Double = 0.0
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
@@ -31,14 +32,11 @@ class AddBeerActivity : AppCompatActivity() {
                 toast("Beer name cannot be empty")
                 return@setOnClickListener
             }
-            if (beerPerMills == null)
-            {
-                toast("Per mills cannot be empty")
-            }
+            if (beerPerMills == null) { toast("Per mills cannot be empty") }
 
             try
             {
-                val permilles = beerPerMills.text.toString().toFloat()
+                beerPerMills.text.toString().toFloat()
             }
             catch (e : NumberFormatException)
             {
@@ -47,17 +45,13 @@ class AddBeerActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-
-            }
-
-
+            getLastLocation()
 
             val beerItem = BeerItem(
                 uid = null,
                 beer_name = beerName,
-                location = null,
+                coord_lat = lastLat,
+                coord_long = lastLong,
                 time = null,
                 percentage = beerPerMills.text.toString().toFloat()
             )
@@ -75,6 +69,58 @@ class AddBeerActivity : AppCompatActivity() {
         btn_cancel.setOnClickListener {
             finish()
         }
+    }
+    private fun getLastLocation() {
+        if(checkPermissions())
+        {
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(applicationContext)
+            fusedLocationClient.lastLocation.addOnCompleteListener(this)
+            {
+                val location: Location? = it.result
+                if(location == null)
+                {
+                    requestNewLocationData()
+                }
+                else
+                {
+                    lastLat = location.latitude
+                    lastLong = location.longitude
+                }
+            }
+        }
+    }
+
+    private fun requestNewLocationData()
+    {
+        val locationRequest = LocationRequest()
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.fastestInterval = 0
+        locationRequest.numUpdates = 1
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        fusedLocationClient.requestLocationUpdates(
+            locationRequest, locationCallback, Looper.myLooper()
+        )
+    }
+
+    private val locationCallback = object  : LocationCallback() {
+        override fun onLocationResult(p0: LocationResult?) {
+            lastLat = p0!!.lastLocation.latitude
+            lastLong = p0.lastLocation.longitude
+        }
+    }
+
+    private fun checkPermissions() : Boolean {
+        if (ActivityCompat.checkSelfPermission(
+                this, android.Manifest.permission.ACCESS_COARSE_LOCATION) ==
+            PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(
+                this, android.Manifest.permission.ACCESS_FINE_LOCATION) ==
+            PackageManager.PERMISSION_GRANTED)
+        {
+            return true
+        }
+        return false
     }
 
 }
