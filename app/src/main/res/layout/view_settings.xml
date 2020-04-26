@@ -53,12 +53,12 @@
 
     <EditText
         android:id="@+id/weight_box"
+        android:inputType="numberDecimal"
         android:layout_width="179dp"
         android:layout_height="45dp"
         android:ems="10"
         android:hint="@string/settings_weigh_hint"
         android:autofillHints="@string/settings_weigh_hint"
-        android:inputType="textPersonName"
         android:textColorHint="@color/transparent_hint"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

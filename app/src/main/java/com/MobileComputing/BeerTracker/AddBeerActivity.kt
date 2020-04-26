@@ -22,24 +22,20 @@ class AddBeerActivity : AppCompatActivity() {
 
             finish()
             val beerName = beerName.text.toString()
-            if (beerName.isEmpty())
-            {
+            if (beerName.isEmpty()) {
                 toast("Beer name cannot be empty")
                 return@setOnClickListener
             }
-            if (beerPerMills == null)
-            {
+            if (beerPerMills == null)  {
                 toast("Per mills cannot be empty")
             }
 
-            try
-            {
+            try  {
                 val permilles = beerPerMills.text.toString().toFloat()
-            }
-            catch (e : NumberFormatException)
-            {
+            } catch (e : NumberFormatException)  {
                 toast("Use . when inserting permills")
-                // This needs to be fixed, currently returns to wrong page after exception
+                /* This needs to be fixed, currently returns
+                 * to wrong page after exception */
                 return@setOnClickListener
             }
 
@@ -52,7 +48,8 @@ class AddBeerActivity : AppCompatActivity() {
             )
 
             doAsync {
-                val db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "beers").build()
+                val db = Room.databaseBuilder(applicationContext,
+                    AppDatabase::class.java, "beers").build()
                 val uid = db.beerDao().insert(beerItem).toInt()
                 beerItem.uid = uid
 
