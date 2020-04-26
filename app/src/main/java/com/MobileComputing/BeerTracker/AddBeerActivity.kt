@@ -1,17 +1,20 @@
 package com.MobileComputing.BeerTracker
 
+import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Location
+import android.nfc.Tag
 import android.os.Bundle
 import android.os.Looper
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.room.Room
 import com.google.android.gms.location.*
 import kotlinx.android.synthetic.main.activity_add_beer.*
-
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.toast
+
 
 class AddBeerActivity : AppCompatActivity() {
 
@@ -19,10 +22,17 @@ class AddBeerActivity : AppCompatActivity() {
     private var lastLong : Double = 0.0
     private var lastLat : Double = 0.0
 
+    private val TAG = "AddBeerActivity"
+    private val REQUEST_CODE = 123
+
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_beer)
+        getLastLocation()
+    }
 
+    override fun onStart() {
+        super.onStart()
         btn_save.setOnClickListener {
 
             finish()
@@ -45,7 +55,8 @@ class AddBeerActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            getLastLocation()
+            Log.v(TAG, "lastLatitude: " + lastLat)
+            Log.v(TAG, "lastLongitude " + lastLong)
 
             val beerItem = BeerItem(
                 uid = null,
@@ -69,6 +80,7 @@ class AddBeerActivity : AppCompatActivity() {
         btn_cancel.setOnClickListener {
             finish()
         }
+
     }
     private fun getLastLocation() {
         if(checkPermissions())
@@ -77,37 +89,23 @@ class AddBeerActivity : AppCompatActivity() {
             fusedLocationClient.lastLocation.addOnCompleteListener(this)
             {
                 val location: Location? = it.result
-                if(location == null)
-                {
-                    requestNewLocationData()
-                }
-                else
+                if(location != null)
                 {
                     lastLat = location.latitude
                     lastLong = location.longitude
                 }
             }
         }
-    }
-
-    private fun requestNewLocationData()
-    {
-        val locationRequest = LocationRequest()
-        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest.fastestInterval = 0
-        locationRequest.numUpdates = 1
-
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        fusedLocationClient.requestLocationUpdates(
-            locationRequest, locationCallback, Looper.myLooper()
-        )
-    }
-
-    private val locationCallback = object  : LocationCallback() {
-        override fun onLocationResult(p0: LocationResult?) {
-            lastLat = p0!!.lastLocation.latitude
-            lastLong = p0.lastLocation.longitude
+        else
+        {
+            requestPermissions()
         }
+
+    }
+
+    private  fun requestPermissions() {
+        val permissions = arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
+        ActivityCompat.requestPermissions(this, permissions, REQUEST_CODE)
     }
 
     private fun checkPermissions() : Boolean {

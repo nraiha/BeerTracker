@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,31 +19,32 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import java.util.*
-import com.google.android.gms.maps.model.Marker
 import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
-
+import java.lang.Exception
+import kotlin.collections.ArrayList
 
 class MapView : Fragment(), OnMapReadyCallback {
-
 
     private lateinit var googleMap : GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var latLong: LatLng
-
+    
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?)
             : View? = inflater.inflate(
                     R.layout.view_map, container, false)
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment
 
         mapFragment.getMapAsync(this)
+
     }
 
     override fun onMapReady(map: GoogleMap?) {
+
         googleMap = map!!
         if(context?.let { ContextCompat.checkSelfPermission(it, android.Manifest.permission.ACCESS_FINE_LOCATION) } == PackageManager.PERMISSION_GRANTED
             || context?.let { ContextCompat.checkSelfPermission(it, android.Manifest.permission.ACCESS_COARSE_LOCATION) } == PackageManager.PERMISSION_GRANTED)
@@ -63,25 +65,6 @@ class MapView : Fragment(), OnMapReadyCallback {
         else
         {
             ActivityCompat.requestPermissions(context as Activity, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION), 123)
-        }
-        val geocoder = Geocoder(activity!!.applicationContext, Locale.getDefault())
-
-        doAsync {
-            val db = Room.databaseBuilder(activity!!.applicationContext, AppDatabase::class.java, "beers").build()
-            val beers = db.beerDao().getBeers()
-            db.close()
-
-            var title = ""
-            var city = ""
-            for (beer in beers )
-            {
-                var latLng = LatLng(beer.coord_lat, beer.coord_long)
-                val addressList = geocoder.getFromLocation(latLng.latitude, latLong.longitude, 1)
-                city = addressList[0].locality
-                title = addressList[0].getAddressLine(0)
-                val marker = googleMap.addMarker(MarkerOptions().position(latLng).snippet(title).title(city))
-                marker.showInfoWindow()
-            }
         }
     }
 
