@@ -6,13 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.room.Room
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.view_map.*
 import org.jetbrains.anko.toast
 import kotlinx.android.synthetic.main.view_show_beer.*
 import kotlinx.android.synthetic.main.view_show_beer.view.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import kotlin.properties.Delegates
 
 class ShowBeerView : Fragment() {
+
+    private var mItemPosition : Int = 0
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?)
             : View? = inflater.inflate(
@@ -22,11 +28,30 @@ class ShowBeerView : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         list.setOnItemClickListener { parent, view, position, id ->
-            context!!.toast("Selected item")
+           mItemPosition = position
+            activity!!.toast("Item selected")
         }
 
         view!!.btn_delete.setOnClickListener {
-            context!!.toast("Delete item")
+            doAsync {
+                val db = Room.databaseBuilder(
+                    activity!!.applicationContext,
+                    AppDatabase::class.java,
+                    "beers"
+                ).build()
+                val beers = db.beerDao().getBeers()
+                db.close()
+                if (beers.isNotEmpty()) {
+                    beers[mItemPosition].uid?.let { it1 ->
+                        db.beerDao().delete(it1)
+                    }
+                }
+                uiThread {
+                    val beersAdapter = BeersAdapter(activity!!.applicationContext, beers)
+                    list.adapter = beersAdapter
+                    beersAdapter.notifyDataSetChanged()
+                }
+            }
         }
     }
 
@@ -37,15 +62,20 @@ class ShowBeerView : Fragment() {
 
     private fun getBeers() : Array<BeerItem>
     {
-        val db = Room.databaseBuilder(activity!!.applicationContext, AppDatabase::class.java, "beers").build()
-        val beers = db.beerDao().getBeers()
-        db.close()
+        var beers : Array<BeerItem> = arrayOf()
+        doAsync {
+            val db = Room.databaseBuilder(activity!!.applicationContext, AppDatabase::class.java, "beers").build()
+            beers = db.beerDao().getBeers()
+            db.close()
+        }
         return beers
     }
 
     private fun refreshList() {
         doAsync {
-            val beers = getBeers()
+            val db = Room.databaseBuilder(activity!!.applicationContext, AppDatabase::class.java, "beers").build()
+            val beers = db.beerDao().getBeers()
+            db.close()
             uiThread {
                 if (beers.isNotEmpty())
                 {
