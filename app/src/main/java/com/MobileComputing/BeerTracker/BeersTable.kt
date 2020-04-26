@@ -10,7 +10,8 @@ data class BeerItem(
     @ColumnInfo(name = "beer_name") var beer_name: String?,
     @ColumnInfo(name = "percentage") var percentage: Float?,
     @ColumnInfo(name = "time") var time: Long?,
-    @ColumnInfo(name = "location") var location: String?
+    @ColumnInfo(name = "coord_lat") var coord_lat: Double,
+    @ColumnInfo(name = "coord_long") var coord_long: Double
 )
 
 @Dao
