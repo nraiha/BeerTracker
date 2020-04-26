@@ -2,6 +2,7 @@ package com.MobileComputing.BeerTracker
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +18,7 @@ import org.jetbrains.anko.uiThread
 class MainView : Fragment() {
 
 
-    private fun initSex(): Int? {
+    private fun get_sex(): Int? {
         var sex: Int? = null
         doAsync {
             val db = Room.databaseBuilder(
@@ -30,7 +31,7 @@ class MainView : Fragment() {
         return sex
     }
 
-    private fun initWeight(): Double? {
+    private fun get_weight(): Double? {
         var weight: Double? = 0.0
         doAsync {
             val db = Room.databaseBuilder(
@@ -48,10 +49,12 @@ class MainView : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view: View = inflater.inflate(R.layout.view_main, container, false)
-        var sex: Int? = initSex()
-        var weight: Double? = initWeight()
+        var sex: Int? = get_sex()
+        var weight: Double? = get_weight()
 
         /* Check if weight and sex is added. Print text if not */
+        var xxx = "sex: $sex\nweight: $weight"
+        Log.d("DEBUG", xxx)
         if (sex == -1 || sex == null || weight == 0.0 || weight == null) {
             view.welcome.setText("Please input user info!")
             view.welcome.setTextColor(resources.getColor(R.color.error))
@@ -59,8 +62,6 @@ class MainView : Fragment() {
             view.welcome.setText("You are durnk!")
             view.welcome.setTextColor(resources.getColor(R.color.allGood))
         }
-
-
 
         view.btn_addBeer.setOnClickListener {
             val intent = Intent(activity, AddBeerActivity::class.java)

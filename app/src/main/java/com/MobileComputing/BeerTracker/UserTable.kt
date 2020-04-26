@@ -22,4 +22,6 @@ interface UserDao {
     @Query ("SELECT weight FROM user")
     fun getWeight(): Double
 
+    @Update
+    fun update(userInfo: UserInfo)
 }

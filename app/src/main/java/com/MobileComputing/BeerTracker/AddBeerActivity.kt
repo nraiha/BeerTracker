@@ -26,16 +26,8 @@ class AddBeerActivity : AppCompatActivity() {
                 toast("Beer name cannot be empty")
                 return@setOnClickListener
             }
-            if (beerPerMills == null)  {
+            if (percentage == null)  {
                 toast("Per mills cannot be empty")
-            }
-
-            try  {
-                val permilles = beerPerMills.text.toString().toFloat()
-            } catch (e : NumberFormatException)  {
-                toast("Use . when inserting permills")
-                /* This needs to be fixed, currently returns
-                 * to wrong page after exception */
                 return@setOnClickListener
             }
 
@@ -44,7 +36,7 @@ class AddBeerActivity : AppCompatActivity() {
                 beer_name = beerName,
                 location = null,
                 time = null,
-                percentage = beerPerMills.text.toString().toFloat()
+                percentage = percentage.text.toString().toFloat()
             )
 
             doAsync {

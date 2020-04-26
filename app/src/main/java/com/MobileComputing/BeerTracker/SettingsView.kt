@@ -1,27 +1,21 @@
 package com.MobileComputing.BeerTracker
 
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
-import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.room.Room
 import kotlinx.android.synthetic.main.view_settings.*
 import kotlinx.android.synthetic.main.view_settings.view.*
-import kotlinx.android.synthetic.main.view_settings.view.weight_box
 import org.jetbrains.anko.doAsync
 
 class SettingsView : Fragment() {
-    var weight: Double = 0.0
     var sex: Int = -1
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?) : View? {
-
         val view: View =  inflater.inflate(R.layout.view_settings,
                 container, false)
 
@@ -37,15 +31,28 @@ class SettingsView : Fragment() {
                 }
             }
         }
-
+        /*
+        /* This is a problem? */
+        var weight_str: String = weight_box.text.toString()
+        if (weight_str.isEmpty()) {
+            weight = 0.0
+        } else {
+            weight = weight_box.text.toString().toDouble()
+        }
+         */
         /* Save to database */
         view.btn_save.setOnClickListener {
-            /* This is a problem? */
-            var weight_str: String = weight_box.text.toString()
-            if (weight_str.isEmpty()) {
-                weight = 0.0
-            } else {
-                weight = weight_box.text.toString().toDouble()
+            if (sex == -1) {
+                Toast.makeText(view.context, "Set sex!",
+                    Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val weight: Double? = weight_box.text.toString().toDoubleOrNull()
+            if (weight == 0.0 || weight == null) {
+                Toast.makeText(view.context, "Set the weight!",
+                    Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
 
             val str: String = "sex: $sex\nweight: $weight"
@@ -60,8 +67,8 @@ class SettingsView : Fragment() {
             doAsync {
                 val db = Room.databaseBuilder(view.context,
                         AppDatabase::class.java, "user").build()
-                val uid = db.userDao().insert(userInfo).toInt()
-                userInfo.uid = uid
+                db.userDao().update(userInfo)
+                //userInfo.uid = uid
 
                 db.close()
 
