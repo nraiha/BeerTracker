@@ -52,6 +52,9 @@ class MainView : Fragment() {
         var sex: Int? = get_sex()
         var weight: Double? = get_weight()
 
+        var str: String = "\nSex: $sex\nWeight: $weight"
+        Log.d("DEBUG", str)
+
         /* Check if weight and sex is added. Print text if not */
         if (sex == -1 || sex == null || weight == 0.0 || weight == null) {
             view.welcome.setText("Please input user info!")

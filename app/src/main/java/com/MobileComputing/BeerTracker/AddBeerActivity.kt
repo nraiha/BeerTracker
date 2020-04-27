@@ -20,7 +20,6 @@ class AddBeerActivity : AppCompatActivity() {
         setContentView(R.layout.activity_add_beer)
 
         btn_save.setOnClickListener {
-
             finish()
             val beerName = beerName.text.toString()
             if (beerName.isEmpty()) {

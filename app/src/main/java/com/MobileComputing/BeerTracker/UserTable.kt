@@ -6,15 +6,15 @@ import androidx.room.*
 
 data class UserInfo(
     @PrimaryKey var uid: Int?,
-    @ColumnInfo(name = "weight") var weight: Double?,
-    @ColumnInfo(name = "sex") var sex: Int?
+    @ColumnInfo(name = "sex") var sex: Int?,
+    @ColumnInfo(name = "weight") var weight: Double?
 )
 
 @Dao
 
 interface UserDao {
     @Transaction @Insert
-    fun insert(user: UserInfo): Long
+    fun insert(user: UserInfo)
 
     @Query ("SELECT sex FROM user WHERE uid=null")
     fun getSex(): Int

@@ -39,11 +39,9 @@ class MainActivity : AppCompatActivity() {
         )
 
         doAsync {
-            val db = Room.databaseBuilder(
-                applicationContext,
-                AppDatabase::class.java, "user"
-            ).build()
-            db.userDao().insert(userInfo).toInt()
+            val db = Room.databaseBuilder(applicationContext,
+                AppDatabase::class.java, "user").build()
+            db.userDao().insert(userInfo)
             db.close()
         }
 

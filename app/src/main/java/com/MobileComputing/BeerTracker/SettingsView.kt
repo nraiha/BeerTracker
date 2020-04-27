@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.view_settings.view.*
 import org.jetbrains.anko.doAsync
 
 class SettingsView : Fragment() {
-    var sex: Int = -1
+    private var sex: Int = -1
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?) : View? {
         val view: View =  inflater.inflate(R.layout.view_settings,
@@ -32,33 +32,25 @@ class SettingsView : Fragment() {
                 }
             }
         }
-        /*
-        /* This is a problem? */
-        var weight_str: String = weight_box.text.toString()
-        if (weight_str.isEmpty()) {
-            weight = 0.0
-        } else {
-            weight = weight_box.text.toString().toDouble()
-        }
-         */
+
         /* Save to database */
         view.btn_save.setOnClickListener {
+            /* Check that sex is selected */
             if (sex == -1) {
-                Toast.makeText(view.context, "Set sex!",
+                Toast.makeText(view.context, "Choose sex!",
                     Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
+            /* Check that weight has been given */
             val weight: Double? = weight_box.text.toString().toDoubleOrNull()
             if (weight == 0.0 || weight == null) {
-                Toast.makeText(view.context, "Set the weight!",
+                Toast.makeText(view.context, "Set weight!",
                     Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            /*
-            val str: String = "sex: $sex\nweight: $weight"
-            Toast.makeText(view.context, str, Toast.LENGTH_SHORT).show()
-            */
+
+            /* Insert into database */
             val userInfo = UserInfo(
                 uid = null,
                 weight = weight,
@@ -70,14 +62,13 @@ class SettingsView : Fragment() {
                         AppDatabase::class.java, "user").build()
                 db.userDao().update(userInfo)
                 db.close()
-
             }
-
+            Toast.makeText(view.context, "Settings saved!",
+                Toast.LENGTH_SHORT).show()
         }
 
         return view
     }
-
 
     companion object {
         fun newInstance(): SettingsView = SettingsView()
