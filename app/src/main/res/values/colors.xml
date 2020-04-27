@@ -24,6 +24,8 @@
     <color name="active_color">#D8DEE9</color>
     <color name="unactive_color">#4C566A</color>
 
+    <color name="error">#BF616A</color>
+    <color name="allGood">#A3BE8C</color>
 
     <color name="colorPrimary">#3B4252</color>
     <color name="colorPrimaryDark">#2E3440</color>

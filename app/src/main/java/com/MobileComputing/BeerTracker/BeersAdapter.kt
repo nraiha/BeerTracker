@@ -8,9 +8,11 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import kotlinx.android.synthetic.main.list_view_item.view.*
 
-class BeersAdapter(context: Context, private val list: Array<BeerItem>) : BaseAdapter () {
+class BeersAdapter(context: Context, private val list: Array<BeerItem>)
+    : BaseAdapter() {
 
-    private val inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+    private val inflater: LayoutInflater = context.getSystemService(
+        Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
     @SuppressLint("ViewHolder")
     override fun getView(

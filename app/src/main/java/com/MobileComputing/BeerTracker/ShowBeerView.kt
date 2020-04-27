@@ -73,13 +73,15 @@ class ShowBeerView : Fragment() {
 
     private fun refreshList() {
         doAsync {
-            val db = Room.databaseBuilder(activity!!.applicationContext, AppDatabase::class.java, "beers").build()
+            val db = Room.databaseBuilder(activity!!.applicationContext,
+                AppDatabase::class.java, "beers").build()
             val beers = db.beerDao().getBeers()
             db.close()
             uiThread {
                 if (beers.isNotEmpty())
                 {
-                    val beersAdapter = BeersAdapter(activity!!.applicationContext, beers)
+                    val beersAdapter = BeersAdapter(
+                        activity!!.applicationContext, beers)
                     list.adapter = beersAdapter
                 }
             }

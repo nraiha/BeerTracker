@@ -4,7 +4,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.room.Room
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import org.jetbrains.anko.doAsync
 
 
 class MainActivity : AppCompatActivity() {
@@ -26,44 +28,22 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-/*
-        when (item.itemId) {
-                R.id.navigation_main -> {
-                val mainView = MainView.newInstance()
-                openFragment(mainView)
-
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_show_beer -> {
-                val showBeerView = ShowBeerView.newInstance()
-                openFragment(showBeerView)
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_map -> {
-                val mapView = MapView.newInstance()
-                openFragment(mapView)
-                return@OnNavigationItemSelectedListener trueo
-            }
-            R.id.navigation_settings -> {
-
-                val settingsView = SettingsView.newInstance()
-                openFragment(settingsView)
-                return@OnNavigationItemSelectedListener true
-            }
-        }
-                false
-    }
-
-    private fun openFragment(fragment: Fragment) {
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.container, fragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
-    }
-*/
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val userInfo = UserInfo(
+            uid = null,
+            sex = -1,
+            weight = 0.0
+        )
+
+        doAsync {
+            val db = Room.databaseBuilder(applicationContext,
+                AppDatabase::class.java, "user").build()
+            db.userDao().insert(userInfo)
+            db.close()
+        }
 
         val bottomNav = findViewById<BottomNavigationView>(
             R.id.bottom_navigation)
@@ -80,14 +60,7 @@ class MainActivity : AppCompatActivity() {
         fragmentTransaction.replace(R.id.container, mainView)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
-    /*
-        val bottomNavigation: BottomNavigationView =
-                findViewById(R.id.bottom_navigation)
-        bottomNavigation.setOnNavigationItemSelectedListener(navListener)
-        val mainView = MainView.newInstance()
-        openFragment(mainView)
 
-     */
     }
 
     override fun onBackPressed()

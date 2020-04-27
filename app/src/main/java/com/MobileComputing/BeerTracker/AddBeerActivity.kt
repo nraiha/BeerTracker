@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.nfc.Tag
 import android.os.Bundle
+import android.widget.Toast
 import android.os.Looper
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -34,24 +35,15 @@ class AddBeerActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         btn_save.setOnClickListener {
-
             finish()
             val beerName = beerName.text.toString()
-            if (beerName.isEmpty())
-            {
+            if (beerName.isEmpty()) {
                 toast("Beer name cannot be empty")
                 return@setOnClickListener
             }
-            if (beerPerMills == null) { toast("Per mills cannot be empty") }
 
-            try
-            {
-                beerPerMills.text.toString().toFloat()
-            }
-            catch (e : NumberFormatException)
-            {
-                toast("Use . when inserting permills")
-                // This needs to be fixed, currently returns to wrong page after exception
+            if (percentage == null)  {
+                toast("Per mills cannot be empty")
                 return@setOnClickListener
             }
 
@@ -64,17 +56,19 @@ class AddBeerActivity : AppCompatActivity() {
                 coord_lat = lastLat,
                 coord_long = lastLong,
                 time = null,
-                percentage = beerPerMills.text.toString().toFloat()
+                percentage = percentage.text.toString().toFloat()
             )
 
             doAsync {
-                val db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "beers").build()
+                val db = Room.databaseBuilder(applicationContext,
+                    AppDatabase::class.java, "beers").build()
                 val uid = db.beerDao().insert(beerItem).toInt()
                 beerItem.uid = uid
                 db.close()
-
             }
+
             toast("Entry added")
+
         }
 
         btn_cancel.setOnClickListener {

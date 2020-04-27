@@ -21,7 +21,7 @@ interface BeerDao {
     fun insert(beers: BeerItem): Long
 
     @Query ("DELETE FROM beers WHERE uid= :id")
-    fun delete (id : Int)
+    fun delete(id : Int)
 
     @Query ("Select * FROM beers")
     fun getBeers(): Array<BeerItem>
