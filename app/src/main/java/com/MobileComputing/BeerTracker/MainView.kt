@@ -45,7 +45,7 @@ class MainView : Fragment() {
 
     }
 
-    fun calculateDrunkness(sex: Int, Wt: Double): Double
+    fun calculateDrunkness(sex: Int?, Wt: Double?): Double
     {
         /*
          * Permilles are calculated with formula:
