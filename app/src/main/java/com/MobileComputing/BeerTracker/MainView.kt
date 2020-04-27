@@ -45,6 +45,54 @@ class MainView : Fragment() {
 
     }
 
+    fun calculateDrunkness(sex: Int, Wt: Double): Double
+    {
+        /*
+         * Permilles are calculated with formula:
+         *      (((0.806 * SD * 1.2) / (BW * Wt)) - MR * DP) * 10
+         *
+         * Where:
+         *      SD = standard drinks.
+         *          1 SD is one III beer. (3.3dl)
+         *          IV beer is 1.4 SD (3.3dl)
+         *      BW = body water constant (0.58 M / 0.49 F)
+         *      Wt = body weight
+         *      MR = metabolism constant (0.015 M / 0.017 F)
+         *      DP = Drinking period hours
+         */
+
+        var SD: Double = 0.0
+        var BW: Double = 0.0
+        var Wt: Double = 0.0
+        var MR: Double = 0.0
+        var DP: Double = 0.0
+        var permilles: Double = 0.0
+
+        /* Male */
+        if (sex == 0) {
+            BW = 0.58
+            MR = 0.015
+        /* Female */
+        } else if (sex == 1) {
+            BW = 0.49
+            MR = 0.017
+        } else {
+            /* Never should go here?? */
+            return 100.0
+        }
+
+        /*
+         * SD = getDrinks??
+         * DP = getTime??
+         */
+
+        permilles = (((0.806 * SD *1.2) / (BW * Wt)) - MR * DP) * 10
+        if (permilles < 0) {
+            return 0.0
+        }
+        return permilles
+    }
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -60,7 +108,9 @@ class MainView : Fragment() {
             view.welcome.setText("Please input user info!")
             view.welcome.setTextColor(resources.getColor(R.color.error))
         } else {
-            view.welcome.setText("You are durnk!")
+            var x: Double = calculateDrunkness(sex, weight)
+            var str: String = "Your bloods alcoholic content is: $x\n"
+            view.welcome.text = str
             view.welcome.setTextColor(resources.getColor(R.color.allGood))
         }
 
