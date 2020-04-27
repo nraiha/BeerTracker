@@ -32,7 +32,7 @@ class MainView : Fragment() {
     }
 
     private fun get_weight(): Double? {
-        var weight: Double? = 0.0
+        var weight: Double? = null
         doAsync {
             val db = Room.databaseBuilder(
                 activity!!.applicationContext,
@@ -53,8 +53,6 @@ class MainView : Fragment() {
         var weight: Double? = get_weight()
 
         /* Check if weight and sex is added. Print text if not */
-        var xxx = "sex: $sex\nweight: $weight"
-        Log.d("DEBUG", xxx)
         if (sex == -1 || sex == null || weight == 0.0 || weight == null) {
             view.welcome.setText("Please input user info!")
             view.welcome.setTextColor(resources.getColor(R.color.error))

@@ -2,6 +2,7 @@ package com.MobileComputing.BeerTracker
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
@@ -44,11 +45,8 @@ class AddBeerActivity : AppCompatActivity() {
                     AppDatabase::class.java, "beers").build()
                 val uid = db.beerDao().insert(beerItem).toInt()
                 beerItem.uid = uid
-
                 db.close()
-
             }
-
         }
 
         btn_cancel.setOnClickListener {

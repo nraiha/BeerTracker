@@ -1,6 +1,7 @@
 package com.MobileComputing.BeerTracker
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,10 +55,10 @@ class SettingsView : Fragment() {
                     Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-
+            /*
             val str: String = "sex: $sex\nweight: $weight"
             Toast.makeText(view.context, str, Toast.LENGTH_SHORT).show()
-
+            */
             val userInfo = UserInfo(
                 uid = null,
                 weight = weight,
@@ -68,8 +69,6 @@ class SettingsView : Fragment() {
                 val db = Room.databaseBuilder(view.context,
                         AppDatabase::class.java, "user").build()
                 db.userDao().update(userInfo)
-                //userInfo.uid = uid
-
                 db.close()
 
             }

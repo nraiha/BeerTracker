@@ -4,7 +4,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.room.Room
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import org.jetbrains.anko.doAsync
 
 
 class MainActivity : AppCompatActivity() {
@@ -29,6 +31,21 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val userInfo = UserInfo(
+            uid = null,
+            sex = -1,
+            weight = 0.0
+        )
+
+        doAsync {
+            val db = Room.databaseBuilder(
+                applicationContext,
+                AppDatabase::class.java, "user"
+            ).build()
+            db.userDao().insert(userInfo).toInt()
+            db.close()
+        }
 
         val bottomNav = findViewById<BottomNavigationView>(
             R.id.bottom_navigation)
