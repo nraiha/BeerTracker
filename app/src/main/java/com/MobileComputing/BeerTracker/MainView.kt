@@ -55,6 +55,13 @@ class MainView : Fragment() {
          *      SD = standard drinks.
          *          1 SD is one III beer. (3.3dl)
          *          IV beer is 1.4 SD (3.3dl)
+         *
+         *      SD is calculated:
+         *          L * % * 0.789
+         *          where:
+         *              L = amount in litres
+         *              % = alcohol percent
+         *
          *      BW = body water constant (0.58 M / 0.49 F)
          *      Wt = body weight
          *      MR = metabolism constant (0.015 M / 0.017 F)
