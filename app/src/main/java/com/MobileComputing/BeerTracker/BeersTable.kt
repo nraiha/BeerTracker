@@ -2,6 +2,7 @@ package com.MobileComputing.BeerTracker
 
 import androidx.room.*
 import java.time.LocalDateTime
+import java.util.*
 
 @Entity(tableName = "beers")
 
@@ -9,7 +10,8 @@ data class BeerItem(
     @PrimaryKey(autoGenerate = true) var uid: Int?,
     @ColumnInfo(name = "beer_name") var beer_name: String?,
     @ColumnInfo(name = "percentage") var percentage: Float?,
-    @ColumnInfo(name = "time") var time: Long?,
+    @ColumnInfo(name = "bottle_size") var bottle_size: Double?,
+    @ColumnInfo(name = "time") var time: String,
     @ColumnInfo(name = "coord_lat") var coord_lat: Double,
     @ColumnInfo(name = "coord_long") var coord_long: Double
 )

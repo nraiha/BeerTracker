@@ -3,18 +3,17 @@ package com.MobileComputing.BeerTracker
 import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Location
-import android.nfc.Tag
 import android.os.Bundle
-import android.widget.Toast
-import android.os.Looper
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.room.Room
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import kotlinx.android.synthetic.main.activity_add_beer.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.toast
+import java.util.*
 
 
 class AddBeerActivity : AppCompatActivity() {
@@ -22,8 +21,6 @@ class AddBeerActivity : AppCompatActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var lastLong : Double = 0.0
     private var lastLat : Double = 0.0
-
-    private val TAG = "AddBeerActivity"
     private val REQUEST_CODE = 123
 
     override fun onCreate(savedInstanceState: Bundle?){
@@ -47,16 +44,27 @@ class AddBeerActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            Log.v(TAG, "lastLatitude: " + lastLat)
-            Log.v(TAG, "lastLongitude " + lastLong)
+            if (percentage.toString().toFloat() > 100) {
+                toast("Percentage cannot be more than 100")
+                return@setOnClickListener
+            }
+
+            if (size == null) {
+                toast("Size canot be empty")
+                return@setOnClickListener
+            }
+
+            val cal: Calendar = Calendar.getInstance()
+            cal.time = Date()
 
             val beerItem = BeerItem(
                 uid = null,
                 beer_name = beerName,
                 coord_lat = lastLat,
                 coord_long = lastLong,
-                time = null,
-                percentage = percentage.text.toString().toFloat()
+                time = cal.time.toString(),
+                percentage = percentage.text.toString().toFloat(),
+                bottle_size = size.text.toString().toDouble()
             )
 
             doAsync {
@@ -66,39 +74,35 @@ class AddBeerActivity : AppCompatActivity() {
                 beerItem.uid = uid
                 db.close()
             }
-
             toast("Entry added")
-
         }
-
         btn_cancel.setOnClickListener {
             finish()
         }
-
     }
+
     private fun getLastLocation() {
         if(checkPermissions())
         {
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(applicationContext)
+            fusedLocationClient =
+                LocationServices.getFusedLocationProviderClient(
+                    applicationContext)
             fusedLocationClient.lastLocation.addOnCompleteListener(this)
             {
                 val location: Location? = it.result
-                if(location != null)
-                {
+                if(location != null) {
                     lastLat = location.latitude
                     lastLong = location.longitude
                 }
             }
-        }
-        else
-        {
+        } else {
             requestPermissions()
         }
-
     }
 
     private  fun requestPermissions() {
-        val permissions = arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
+        val permissions = arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION)
         ActivityCompat.requestPermissions(this, permissions, REQUEST_CODE)
     }
 
