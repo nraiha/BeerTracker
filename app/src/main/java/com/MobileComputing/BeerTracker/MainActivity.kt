@@ -1,6 +1,7 @@
 package com.MobileComputing.BeerTracker
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -11,6 +12,7 @@ import org.jetbrains.anko.doAsync
 
 class MainActivity : AppCompatActivity() {
 
+    private val TAG = "MainActivity"
     private val navListener =
         BottomNavigationView.OnNavigationItemSelectedListener { item ->
             var selectFragment: Fragment? = null
@@ -38,12 +40,21 @@ class MainActivity : AppCompatActivity() {
             weight = 0.0
         )
 
-        doAsync {
-            val db = Room.databaseBuilder(applicationContext,
-                AppDatabase::class.java, "user").build()
-            db.userDao().insert(userInfo)
-            db.close()
-        }
+            doAsync {
+                val db = Room.databaseBuilder(applicationContext,
+                    AppDatabase2::class.java, "user").build()
+                if (!db.userDao().isUsed(1))
+                {
+                    db.userDao().insert(userInfo)
+                    db.close()
+                    Log.v(TAG, "Values are null")
+                }
+                else
+                {
+                    Log.v(TAG, "Values are not null")
+                }
+            }
+
 
         val bottomNav = findViewById<BottomNavigationView>(
             R.id.bottom_navigation)

@@ -17,15 +17,17 @@ import org.jetbrains.anko.uiThread
 
 class MainView : Fragment() {
 
+    private val TAG = "MainView"
 
     private fun get_sex(): Int? {
         var sex: Int? = null
         doAsync {
             val db = Room.databaseBuilder(
                 activity!!.applicationContext,
-                AppDatabase::class.java, "user"
+                AppDatabase2::class.java, "user"
             ).build()
-            sex = db.userDao().getSex()
+            sex = db.userDao().getSex(2)
+            Log.d(TAG, "Received sex : " + sex)
             db.close()
         }
         return sex
@@ -36,13 +38,34 @@ class MainView : Fragment() {
         doAsync {
             val db = Room.databaseBuilder(
                 activity!!.applicationContext,
-                AppDatabase::class.java, "user"
+                AppDatabase2::class.java, "user"
             ).build()
-            weight = db.userDao().getWeight()
+            weight = db.userDao().getWeight(2)
+            Log.d(TAG, "Received weight : " + weight)
             db.close()
         }
         return weight
 
+    }
+
+    private fun get_all_users() : Array<UserInfo>
+    {
+        var users : Array<UserInfo> = arrayOf()
+        doAsync {
+            val db = Room.databaseBuilder(
+                activity!!.applicationContext,
+                AppDatabase2::class.java, "user"
+            ).build()
+            users = db.userDao().getAllUsers()
+            db.close()
+            for (user in users) {
+                Log.d(TAG, "Uid = " + user.uid)
+                Log.d(TAG, "Weight = " + user.weight)
+                Log.d(TAG, "Sex : " + user.sex)
+            }
+        }
+
+        return users
     }
 
     fun calculateDrunkness(sex: Int?, Wt: Double?): Double
@@ -97,18 +120,27 @@ class MainView : Fragment() {
         if (permilles < 0) {
             return 0.0
         }
+        Log.d(TAG, "Permilles : " + permilles)
         return permilles
     }
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view: View = inflater.inflate(R.layout.view_main, container, false)
+
+        // Return the fragment view/layout
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         var sex: Int? = get_sex()
         var weight: Double? = get_weight()
+        var users = get_all_users()
 
         var str: String = "\nSex: $sex\nWeight: $weight"
         Log.d("DEBUG", str)
+
 
         /* Check if weight and sex is added. Print text if not */
         if (sex == -1 || sex == null || weight == 0.0 || weight == null) {
@@ -126,9 +158,6 @@ class MainView : Fragment() {
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(intent)
         }
-
-        // Return the fragment view/layout
-        return view
     }
 
     companion object {
