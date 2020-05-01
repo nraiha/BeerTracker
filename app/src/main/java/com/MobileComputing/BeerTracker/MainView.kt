@@ -26,7 +26,7 @@ class MainView : Fragment() {
                 activity!!.applicationContext,
                 AppDatabase2::class.java, "user"
             ).build()
-            sex = db.userDao().getSex(2)
+            sex = db.userDao().getSex(1)
             Log.d(TAG, "Received sex : " + sex)
             db.close()
         }
@@ -40,7 +40,7 @@ class MainView : Fragment() {
                 activity!!.applicationContext,
                 AppDatabase2::class.java, "user"
             ).build()
-            weight = db.userDao().getWeight(2)
+            weight = db.userDao().getWeight(1)
             Log.d(TAG, "Received weight : " + weight)
             db.close()
         }
