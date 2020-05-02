@@ -14,12 +14,18 @@ import kotlinx.android.synthetic.main.view_settings.view.*
 import org.jetbrains.anko.doAsync
 
 class SettingsView : Fragment() {
+
     private var sex: Int = -1
+    private val TAG = "SettingsView"
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?) : View? {
         val view: View =  inflater.inflate(R.layout.view_settings,
                 container, false)
+        return view
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         /* Radio buttons functionality */
         view.radioGroup.setOnCheckedChangeListener { _, checkedId ->
             val radio: RadioButton = view.findViewById(checkedId)
@@ -50,24 +56,25 @@ class SettingsView : Fragment() {
                 return@setOnClickListener
             }
 
+            Log.d(TAG, "weight : " + weight)
+            Log.d(TAG, "sex : " + sex)
+
             /* Insert into database */
             val userInfo = UserInfo(
-                uid = null,
+                uid = 1,
                 weight = weight,
                 sex = sex
             )
 
             doAsync {
                 val db = Room.databaseBuilder(view.context,
-                        AppDatabase::class.java, "user").build()
+                    AppDatabase2::class.java, "user").build()
                 db.userDao().update(userInfo)
                 db.close()
             }
             Toast.makeText(view.context, "Settings saved!",
                 Toast.LENGTH_SHORT).show()
         }
-
-        return view
     }
 
     companion object {
