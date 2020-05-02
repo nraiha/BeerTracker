@@ -115,7 +115,7 @@ class MapView : Fragment(), OnMapReadyCallback {
                     val marker = addMarker(
                         MarkerOptions().position(
                             location
-                        ).snippet(title).title(title)
+                        ).snippet(title).title(city)
                     )
                     marker.showInfoWindow()
                 }
