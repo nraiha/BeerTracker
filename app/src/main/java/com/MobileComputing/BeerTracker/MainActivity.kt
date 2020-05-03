@@ -1,7 +1,6 @@
 package com.MobileComputing.BeerTracker
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.room.Room
@@ -11,7 +10,6 @@ import org.jetbrains.anko.doAsync
 
 class MainActivity : AppCompatActivity() {
 
-    private val TAG = "MainActivity"
     private val navListener =
         BottomNavigationView.OnNavigationItemSelectedListener { item ->
             var selectFragment: Fragment? = null

@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.room.Room
 import kotlinx.android.synthetic.main.view_main.view.*
 import org.jetbrains.anko.doAsync
-import java.time.Instant
 import java.util.*
 
 class MainView : Fragment() {
@@ -23,12 +22,12 @@ class MainView : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view: View = inflater.inflate(R.layout.view_main, container, false)
 
         // Return the fragment view/layout
-        return view
+        return inflater.inflate(R.layout.view_main, container, false)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -101,11 +100,11 @@ class MainView : Fragment() {
          */
 
 
-        var BW: Double
-        var MR: Double
-        var perMils: Double
-        var DP: Double = 0.0
-        var SD: Double = 0.0
+        val BW: Double
+        val MR: Double
+        val perMils: Double
+        var DP = 0.0
+        var SD = 0.0
 
         /* 0 is male, 1 is female */
 	when (sex) {
@@ -123,14 +122,14 @@ class MainView : Fragment() {
             AppDatabase::class.java, "beers").build()
         val beers = db.beerDao().getBeersWithTimestamp(timeLimit)
 
-        var flag: Int = 0
+        var flag = 0
 
         for (beer in beers) {
             if (flag == 0) {
                 flag = 1
-                var now: Calendar = Calendar.getInstance()
+                val now: Calendar = Calendar.getInstance()
                 now.time = Date()
-                var beerTime = Date(beer.time)
+                val beerTime = Date(beer.time)
                 var s: Double
                 s = ((now.time.time - beerTime.time) / 1000 ).toDouble()
                 Log.d(TAG, "Seconds: $s")

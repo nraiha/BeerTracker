@@ -128,16 +128,7 @@ class MapView : Fragment(), OnMapReadyCallback {
             val db = Room.databaseBuilder(activity!!.applicationContext,
                 AppDatabase::class.java, "beers").build()
             beers = db.beerDao().getBeers()
-            if(beers.isNotEmpty())
-            {
-                Log.v(TAG, "Yes entries")
-            }
-            else
-            {
-                Log.v(TAG, "No entries")
-            }
             db.close()
-
             for (beer in beers)
             {
                 val latLong = LatLng(beer.coord_lat, beer.coord_long)
