@@ -26,5 +26,8 @@ interface BeerDao {
     fun delete(id : Int)
 
     @Query ("Select * FROM beers")
-    fun getBeers(): Array<BeerItem>
+    fun getBeers(): List<BeerItem>
+
+    @Query ("SELECT * FROM beers")
+    fun isEmpty() : Boolean
 }
