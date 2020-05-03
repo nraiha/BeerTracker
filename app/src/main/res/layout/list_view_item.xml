@@ -7,17 +7,27 @@
         android:id="@+id/beer_info"
         android:layout_width="wrap_content"
         android:layout_height="56dp"
-        android:layout_weight="1"
+        android:layout_weight="0.5"
         android:gravity="center"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:text="Beer name" />
 
     <TextView
+        android:id="@+id/bottle_size"
+        android:layout_width="wrap_content"
+        android:layout_height="56dp"
+        android:layout_weight="0.25"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:text="Bottle size" />
+
+    <TextView
         android:id="@+id/percentage_info"
         android:layout_width="wrap_content"
         android:layout_height="56dp"
-        android:layout_weight="1"
+        android:layout_weight="0.25"
         android:gravity="center"
         android:textAlignment="center"
         android:textColor="@color/white"

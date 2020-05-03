@@ -15,6 +15,7 @@ import com.google.android.gms.location.*
 import kotlinx.android.synthetic.main.activity_add_beer.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.toast
+import java.util.*
 
 
 class AddBeerActivity : AppCompatActivity() {
@@ -50,13 +51,27 @@ class AddBeerActivity : AppCompatActivity() {
             Log.v(TAG, "lastLatitude: " + lastLat)
             Log.v(TAG, "lastLongitude " + lastLong)
 
+            if (percentage.text.toString().toFloat() > 100) {
+                toast("Percentage cannot be more than 100")
+                return@setOnClickListener
+            }
+
+            if (size == null) {
+                toast("Size cannot be empty")
+                return@setOnClickListener
+            }
+
+            val cal: Calendar = Calendar.getInstance()
+            cal.time = Date()
+
             val beerItem = BeerItem(
                 uid = null,
                 beer_name = beerName,
                 coord_lat = lastLat,
                 coord_long = lastLong,
-                time = null,
-                percentage = percentage.text.toString().toFloat()
+                time = cal.time.toString(),
+                percentage = percentage.text.toString().toFloat(),
+                bottle_size = size.text.toString().toDouble()
             )
 
             doAsync {
@@ -77,9 +92,10 @@ class AddBeerActivity : AppCompatActivity() {
 
     }
     private fun getLastLocation() {
-        if(checkPermissions())
-        {
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(applicationContext)
+        if(checkPermissions()) {
+            fusedLocationClient =
+                LocationServices.getFusedLocationProviderClient(
+                    applicationContext)
             fusedLocationClient.lastLocation.addOnCompleteListener(this)
             {
                 val location: Location? = it.result

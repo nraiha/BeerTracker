@@ -27,7 +27,7 @@ class ShowBeerView : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        list.setOnItemClickListener { parent, view, position, id ->
+        list.setOnItemClickListener { _, _, position, _ ->
            mItemPosition = position
             activity!!.toast("Item selected")
         }
@@ -64,7 +64,8 @@ class ShowBeerView : Fragment() {
     {
         var beers : List<BeerItem> = listOf()
         doAsync {
-            val db = Room.databaseBuilder(activity!!.applicationContext, AppDatabase::class.java, "beers").build()
+            val db = Room.databaseBuilder(activity!!.applicationContext,
+                AppDatabase::class.java, "beers").build()
             beers = db.beerDao().getBeers()
             db.close()
         }
@@ -78,8 +79,7 @@ class ShowBeerView : Fragment() {
             val beers = db.beerDao().getBeers()
             db.close()
             uiThread {
-                if (beers.isNotEmpty())
-                {
+                if (beers.isNotEmpty()) {
                     val beersAdapter = BeersAdapter(
                         activity!!.applicationContext, beers)
                     list.adapter = beersAdapter
