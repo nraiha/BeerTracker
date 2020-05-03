@@ -20,9 +20,8 @@ class SettingsView : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?) : View? {
-        val view: View =  inflater.inflate(R.layout.view_settings,
+        return inflater.inflate(R.layout.view_settings,
                 container, false)
-        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
