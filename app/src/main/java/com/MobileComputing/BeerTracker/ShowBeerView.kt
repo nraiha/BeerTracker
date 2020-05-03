@@ -47,7 +47,8 @@ class ShowBeerView : Fragment() {
                     }
                 }
                 uiThread {
-                    val beersAdapter = BeersAdapter(activity!!.applicationContext, beers)
+                    val beersAdapter =
+                        BeersAdapter(activity!!.applicationContext, beers)
                     list.adapter = beersAdapter
                     beersAdapter.notifyDataSetChanged()
                 }

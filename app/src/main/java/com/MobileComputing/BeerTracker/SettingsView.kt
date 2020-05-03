@@ -56,8 +56,8 @@ class SettingsView : Fragment() {
                 return@setOnClickListener
             }
 
-            Log.d(TAG, "weight : " + weight)
-            Log.d(TAG, "sex : " + sex)
+            Log.d(TAG, "weight : $weight")
+            Log.d(TAG, "sex : $sex")
 
             /* Insert into database */
             val userInfo = UserInfo(
