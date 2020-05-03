@@ -5,7 +5,7 @@ import androidx.room.*
 @Entity(tableName = "user")
 
 data class UserInfo(
-    @PrimaryKey(autoGenerate = false) var uid: Int?,
+    @PrimaryKey var uid: Int?,
     @ColumnInfo(name = "sex") var sex: Int?,
     @ColumnInfo(name = "weight") var weight: Double?
 )
@@ -16,17 +16,11 @@ interface UserDao {
     @Transaction @Insert
     fun insert(user: UserInfo)
 
-    @Query ("SELECT sex FROM user WHERE uid= :id")
-    fun getSex(id : Int): Int
+    @Query ("SELECT sex FROM user WHERE uid=null")
+    fun getSex(): Int
 
-    @Query ("SELECT weight FROM user WHERE uid= :id")
-    fun getWeight(id : Int): Double
-
-    @Query("SELECT * FROM user WHERE uid= :id")
-    fun isUsed(id : Int) : Boolean
-
-    @Query ("SELECT * FROM user")
-    fun getAllUsers() : Array<UserInfo>
+    @Query ("SELECT weight FROM user WHERE uid=null")
+    fun getWeight(): Double
 
     @Update
     fun update(userInfo: UserInfo)

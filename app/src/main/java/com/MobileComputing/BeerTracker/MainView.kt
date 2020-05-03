@@ -20,16 +20,14 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 class MainView : Fragment() {
-    private val TAG = "MainView"
-    private fun get_sex(): Int? {
+    private fun getSex(): Int? {
         var sex: Int? = null
         doAsync {
             val db = Room.databaseBuilder(
                 activity!!.applicationContext,
-                AppDatabase2::class.java, "user"
+                AppDatabase::class.java, "user"
             ).build()
-            sex = db.userDao().getSex(1)
-            Log.d(TAG, "Received sex : " + sex)
+            sex = db.userDao().getSex()
             db.close()
         }
         return sex
@@ -40,10 +38,9 @@ class MainView : Fragment() {
         doAsync {
             val db = Room.databaseBuilder(
                 activity!!.applicationContext,
-                AppDatabase2::class.java, "user"
+                AppDatabase::class.java, "user"
             ).build()
-            weight = db.userDao().getWeight(1)
-            Log.d(TAG, "Received weight : " + weight)
+            weight = db.userDao().getWeight()
             db.close()
         }
         return weight
@@ -62,28 +59,6 @@ class MainView : Fragment() {
     {
         /* 0.789 is density of ethanol at room temperature */
         return size * percent * 0.789
-    }
-
-  
-
-    private fun get_all_users() : Array<UserInfo>
-    {
-        var users : Array<UserInfo> = arrayOf()
-        doAsync {
-            val db = Room.databaseBuilder(
-                activity!!.applicationContext,
-                AppDatabase2::class.java, "user"
-            ).build()
-            users = db.userDao().getAllUsers()
-            db.close()
-            for (user in users) {
-                Log.d(TAG, "Uid = " + user.uid)
-                Log.d(TAG, "Weight = " + user.weight)
-                Log.d(TAG, "Sex : " + user.sex)
-            }
-        }
-
-        return users
     }
 
     private fun calculatePerMils(sex: Int?, Wt: Double?): Double
@@ -140,21 +115,18 @@ class MainView : Fragment() {
         if (perMils < 0) {
             return 0.0
         }
-
-        Log.d(TAG, "Permilles : " + permilles)
-        return permilles
+        return perMils
     }
 
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        var sex: Int? = get_sex()
-        var weight: Double? = get_weight()
-        var users = get_all_users()
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        val view: View = inflater.inflate(R.layout.view_main, container, false)
+        var sex: Int? = getSex()
+        var weight: Double? = getWeight()
 
         var str: String = "\nSex: $sex\nWeight: $weight"
         Log.d("DEBUG", str)
-
 
         /* Check if weight and sex is added. Print text if not */
         if (sex == -1 || sex == null || weight == 0.0 || weight == null) {
@@ -174,6 +146,9 @@ class MainView : Fragment() {
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(intent)
         }
+
+        // Return the fragment view/layout
+        return view
     }
 
     companion object {

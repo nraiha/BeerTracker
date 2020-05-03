@@ -60,9 +60,9 @@ class ShowBeerView : Fragment() {
         refreshList()
     }
 
-    private fun getBeers() : List<BeerItem>
+    private fun getBeers() : Array<BeerItem>
     {
-        var beers : List<BeerItem> = listOf()
+        var beers : Array<BeerItem> = arrayOf()
         doAsync {
             val db = Room.databaseBuilder(activity!!.applicationContext, AppDatabase::class.java, "beers").build()
             beers = db.beerDao().getBeers()
