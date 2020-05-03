@@ -48,9 +48,6 @@ class AddBeerActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            Log.v(TAG, "lastLatitude: " + lastLat)
-            Log.v(TAG, "lastLongitude " + lastLong)
-
             if (percentage.text.toString().toFloat() > 100) {
                 toast("Percentage cannot be more than 100")
                 return@setOnClickListener
@@ -69,7 +66,7 @@ class AddBeerActivity : AppCompatActivity() {
                 beer_name = beerName,
                 coord_lat = lastLat,
                 coord_long = lastLong,
-                time = cal.time.toString(),
+                time = cal.time.time,
                 percentage = percentage.text.toString().toFloat(),
                 bottle_size = size.text.toString().toDouble()
             )
@@ -92,40 +89,38 @@ class AddBeerActivity : AppCompatActivity() {
 
     }
     private fun getLastLocation() {
-        if(checkPermissions()) {
-            fusedLocationClient =
-                LocationServices.getFusedLocationProviderClient(
-                    applicationContext)
+        if (checkPermissions()) {
+
+            fusedLocationClient = LocationServices
+                .getFusedLocationProviderClient(applicationContext)
             fusedLocationClient.lastLocation.addOnCompleteListener(this)
+
             {
                 val location: Location? = it.result
-                if(location != null)
-                {
+                if(location != null) {
                     lastLat = location.latitude
                     lastLong = location.longitude
                 }
             }
-        }
-        else
-        {
+        } else {
             requestPermissions()
         }
 
     }
 
     private  fun requestPermissions() {
-        val permissions = arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
+        val permissions = arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION)
         ActivityCompat.requestPermissions(this, permissions, REQUEST_CODE)
     }
 
     private fun checkPermissions() : Boolean {
-        if (ActivityCompat.checkSelfPermission(
-                this, android.Manifest.permission.ACCESS_COARSE_LOCATION) ==
-            PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(
-                this, android.Manifest.permission.ACCESS_FINE_LOCATION) ==
-            PackageManager.PERMISSION_GRANTED)
-        {
+        if (ActivityCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED) {
             return true
         }
         return false

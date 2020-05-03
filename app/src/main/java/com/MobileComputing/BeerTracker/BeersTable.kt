@@ -11,7 +11,7 @@ data class BeerItem(
     @ColumnInfo(name = "beer_name") var beer_name: String?,
     @ColumnInfo(name = "percentage") var percentage: Float?,
     @ColumnInfo(name = "bottle_size") var bottle_size: Double?,
-    @ColumnInfo(name = "time") var time: String,
+    @ColumnInfo(name = "time") var time: Long,
     @ColumnInfo(name = "coord_lat") var coord_lat: Double,
     @ColumnInfo(name = "coord_long") var coord_long: Double
 )
@@ -30,4 +30,7 @@ interface BeerDao {
 
     @Query ("SELECT * FROM beers")
     fun isEmpty() : Boolean
+
+    @Query ("SELECT * FROM beers WHERE time>= :timeLimit")
+    fun getBeersWithTimestamp(timeLimit: Long): List<BeerItem>
 }

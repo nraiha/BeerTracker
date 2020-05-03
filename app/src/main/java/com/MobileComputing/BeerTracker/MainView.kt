@@ -1,15 +1,18 @@
 package com.MobileComputing.BeerTracker
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.room.Room
 import kotlinx.android.synthetic.main.view_main.view.*
 import org.jetbrains.anko.doAsync
+import java.time.Instant
 import java.util.*
 
 class MainView : Fragment() {
@@ -36,19 +39,20 @@ class MainView : Fragment() {
             ).build()
             receivedSex = db.userDao().getSex()
             receivedWeight = db.userDao().getWeight()
-            Log.d(TAG, "Received sex : " + receivedSex)
-            Log.d(TAG, "Received weight : " + receivedWeight)
             db.close()
 
             /* Check if weight and sex is added. Print text if not */
-            if (receivedSex == -1 || receivedSex == null || receivedWeight == 0.0 || receivedWeight == null) {
-                view.welcome.setText("Please input user info!")
-                view.welcome.setTextColor(resources.getColor(R.color.error))
+            if (receivedSex == -1 || receivedWeight == 0.0) {
+                view.welcome.text = "Please input user info!"
+                view.welcome.setTextColor(
+                    ContextCompat.getColor(context!!, R.color.error))
             } else {
-                var x: Double = calculatePerMils(receivedSex, receivedWeight)
-                var str: String = "Your bloods alcoholic content is: $x\n"
+                val x: Double = calculatePerMils(receivedSex, receivedWeight)
+                val str: String = String.format(
+                    "Your bloods alcoholic content is: %.2f", x)
                 view.welcome.text = str
-                view.welcome.setTextColor(resources.getColor(R.color.allGood))
+                view.welcome.setTextColor(
+                    ContextCompat.getColor(context!!, R.color.allGood))
             }
         }
 
@@ -59,12 +63,12 @@ class MainView : Fragment() {
             }
     }
 
-    private fun getTimeLimit(): String
+    private fun getTimeLimit(): Long
     {
         val cal: Calendar = Calendar.getInstance()
         cal.time = Date()
         cal.add(Calendar.HOUR, -12)
-        return cal.time.toString()
+        return cal.time.time
     }
 
     private fun convertToSD(size: Double, percent: Double): Double
@@ -73,7 +77,7 @@ class MainView : Fragment() {
         return size * percent * 0.789
     }
 
-    fun calculatePerMils(sex: Int?, Wt: Double?): Double
+    private fun calculatePerMils(sex: Int?, Wt: Double?): Double
     {
         /*
          * Per mils are calculated with formula:
@@ -96,12 +100,12 @@ class MainView : Fragment() {
          *      DP = Drinking period hours
          */
 
-        var SD: Double = 0.0
-        var BW: Double = 0.0
-        var Wt: Double = 0.0
-        var MR: Double = 0.0
+
+        var BW: Double
+        var MR: Double
+        var perMils: Double
         var DP: Double = 0.0
-        var perMils: Double = 0.0
+        var SD: Double = 0.0
 
         /* 0 is male, 1 is female */
 	when (sex) {
@@ -112,20 +116,39 @@ class MainView : Fragment() {
         }
 
         /* Use only beers from the last 12 hours */
-        val timeLimit: String = getTimeLimit()
+        val timeLimit: Long = getTimeLimit()
 
         /* Query the beers where timestamp is greater than the timeLimit */
-        // SELECT BEERS WHERE TIMESTAMP >= TIMELIMIT
+        val db = Room.databaseBuilder(activity!!.applicationContext,
+            AppDatabase::class.java, "beers").build()
+        val beers = db.beerDao().getBeersWithTimestamp(timeLimit)
 
-        /* Convert the beer size and alcohol percent to SD's */
-        //SD = convertToSD(beer.bottle_size, beer.percent)
+        var flag: Int = 0
+
+        for (beer in beers) {
+            if (flag == 0) {
+                flag = 1
+                var now: Calendar = Calendar.getInstance()
+                now.time = Date()
+                var beerTime = Date(beer.time)
+                var s: Double
+                s = ((now.time.time - beerTime.time) / 1000 ).toDouble()
+                Log.d(TAG, "Seconds: $s")
+                DP = s/60/60
+                Log.d(TAG, "DP: $DP")
+
+            }
+            /* Convert the beer size and alcohol percent to SD's */
+            SD += convertToSD(beer.bottle_size!!, beer.percentage!!.toDouble())
+        }
+
 
         /* Calculate the per mils */
-        perMils = (((0.086 * SD * 1.2) / (BW * Wt)) - MR * DP) * 10
+        perMils = (((0.806 * SD * 1.2) / (BW * Wt!!)) - MR * DP) * 10
         if (perMils < 0)
-            return 0.0
+            return 0.00
 
-        Log.d(TAG, "Permilles : " + perMils)
+        Log.d(TAG, "Per mils : $perMils")
 
         return perMils
     }

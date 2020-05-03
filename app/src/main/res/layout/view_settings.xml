@@ -94,4 +94,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.548" />
 
+    <TextView
+        android:id="@+id/disclaimer"
+        android:layout_width="372dp"
+        android:layout_height="68dp"
+        android:layout_marginTop="108dp"
+        android:text="DISCLAIMER: Per mil calculator is far from accurate and it is only meant to use for fun. App designers will not take any responsibility from the measures"
+        android:textColor="@color/error"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.487"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_save" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
