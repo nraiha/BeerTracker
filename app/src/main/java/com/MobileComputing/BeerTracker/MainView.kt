@@ -100,11 +100,12 @@ class MainView : Fragment() {
          *      DP = Drinking period hours
          */
 
-        var SD: Double = 0.0
-        var BW: Double = 0.0
-        var MR: Double = 0.0
+
+        var BW: Double
+        var MR: Double
+        var perMils: Double
         var DP: Double = 0.0
-        var perMils: Double = 0.0
+        var SD: Double = 0.0
 
         /* 0 is male, 1 is female */
 	when (sex) {
@@ -130,7 +131,7 @@ class MainView : Fragment() {
                 var now: Calendar = Calendar.getInstance()
                 now.time = Date()
                 var beerTime = Date(beer.time)
-                var s: Double = 0.0
+                var s: Double
                 s = ((now.time.time - beerTime.time) / 1000 ).toDouble()
                 Log.d(TAG, "Seconds: $s")
                 DP = s/60/60
@@ -143,7 +144,7 @@ class MainView : Fragment() {
 
 
         /* Calculate the per mils */
-        perMils = (((0.086 * SD * 1.2) / (BW * Wt!!)) - MR * DP) * 10
+        perMils = (((0.806 * SD * 1.2) / (BW * Wt!!)) - MR * DP) * 10
         if (perMils < 0)
             return 0.00
 
