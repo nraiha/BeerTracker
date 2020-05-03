@@ -16,17 +16,14 @@ interface UserDao {
     @Transaction @Insert
     fun insert(user: UserInfo)
 
-    @Query ("SELECT sex FROM user WHERE uid= :id")
-    fun getSex(id : Int): Int
+    @Query ("SELECT sex FROM user WHERE uid=1")
+    fun getSex(): Int
 
-    @Query ("SELECT weight FROM user WHERE uid= :id")
-    fun getWeight(id : Int): Double
+    @Query ("SELECT weight FROM user WHERE uid=1")
+    fun getWeight(): Double
 
     @Query("SELECT * FROM user WHERE uid= :id")
     fun isUsed(id : Int) : Boolean
-
-    @Query ("SELECT * FROM user")
-    fun getAllUsers() : Array<UserInfo>
 
     @Update
     fun update(userInfo: UserInfo)

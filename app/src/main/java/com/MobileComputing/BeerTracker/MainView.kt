@@ -6,68 +6,58 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.room.Room
 import kotlinx.android.synthetic.main.view_main.view.*
 import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
 import java.util.*
 
 class MainView : Fragment() {
 
     private val TAG = "MainView"
+    private var receivedSex : Int = 0
+    private var receivedWeight : Double = 0.0
 
-    private fun getSex(): Int? {
-        var sex: Int? = null
-        doAsync {
-            val db = Room.databaseBuilder(
-                activity!!.applicationContext,
-                AppDatabase2::class.java, "user"
-            ).build()
-            sex = db.userDao().getSex(1)
-            Log.d(TAG, "Received sex : " + sex)
-            db.close()
-        }
-        return sex
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        val view: View = inflater.inflate(R.layout.view_main, container, false)
+
+        // Return the fragment view/layout
+        return view
     }
 
-    private fun getWeight(): Double? {
-        var weight: Double? = null
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         doAsync {
             val db = Room.databaseBuilder(
                 activity!!.applicationContext,
                 AppDatabase2::class.java, "user"
             ).build()
-            weight = db.userDao().getWeight(1)
-            Log.d(TAG, "Received weight : " + weight)
+            receivedSex = db.userDao().getSex()
+            receivedWeight = db.userDao().getWeight()
+            Log.d(TAG, "Received sex : " + receivedSex)
+            Log.d(TAG, "Received weight : " + receivedWeight)
             db.close()
-        }
-        return weight
 
-    }
-
-    private fun getAllUsers() : Array<UserInfo>
-    {
-        var users : Array<UserInfo> = arrayOf()
-        doAsync {
-            val db = Room.databaseBuilder(
-                activity!!.applicationContext,
-                AppDatabase2::class.java, "user"
-            ).build()
-            users = db.userDao().getAllUsers()
-            db.close()
-            for (user in users) {
-                Log.d(TAG, "Uid = " + user.uid)
-                Log.d(TAG, "Weight = " + user.weight)
-                Log.d(TAG, "Sex : " + user.sex)
+            /* Check if weight and sex is added. Print text if not */
+            if (receivedSex == -1 || receivedSex == null || receivedWeight == 0.0 || receivedWeight == null) {
+                view.welcome.setText("Please input user info!")
+                view.welcome.setTextColor(resources.getColor(R.color.error))
+            } else {
+                var x: Double = calculatePerMils(receivedSex, receivedWeight)
+                var str: String = "Your bloods alcoholic content is: $x\n"
+                view.welcome.text = str
+                view.welcome.setTextColor(resources.getColor(R.color.allGood))
             }
         }
 
-        return users
+            view.btn_addBeer.setOnClickListener {
+                val intent = Intent(activity, AddBeerActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                startActivity(intent)
+            }
     }
 
     private fun getTimeLimit(): String
@@ -139,44 +129,6 @@ class MainView : Fragment() {
         Log.d(TAG, "Permilles : " + perMils)
 
         return perMils
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view: View = inflater.inflate(R.layout.view_main, container, false)
-
-        // Return the fragment view/layout
-        return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        var sex: Int? = getSex()
-        var weight: Double? = getWeight()
-        var users = getAllUsers()
-
-        var str: String = "\nSex: $sex\nWeight: $weight"
-        Log.d("DEBUG", str)
-
-
-        /* Check if weight and sex is added. Print text if not */
-        if (sex == -1 || sex == null || weight == 0.0 || weight == null) {
-            view.welcome.text = "Please input user info!"
-            view.welcome.setTextColor(ContextCompat.getColor(
-                context!!, R.color.error))
-        } else {
-            var x: Double = calculatePerMils(sex, weight)
-            var str: String = "Your bloods alcoholic content is: $x\n"
-            view.welcome.text = str
-            view.welcome.setTextColor(ContextCompat.getColor(
-                context!!, R.color.allGood))
-        }
-
-        view.btn_addBeer.setOnClickListener {
-            val intent = Intent(activity, AddBeerActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            startActivity(intent)
-        }
     }
 
     companion object {
