@@ -23,6 +23,7 @@ class BeersAdapter(context: Context, private val list: List<BeerItem>)
         val row = inflater.inflate(R.layout.list_view_item, parent, false)
 
         row.beer_info.text = list[position].beer_name
+        row.bottle_size.text = list[position].bottle_size.toString()
         row.percentage_info.text =list[position].percentage.toString()
 
         return row

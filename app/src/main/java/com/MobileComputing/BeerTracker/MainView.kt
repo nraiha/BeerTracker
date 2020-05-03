@@ -9,17 +9,19 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.room.Room
 import kotlinx.android.synthetic.main.view_main.view.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import java.util.*
 
 class MainView : Fragment() {
 
     private val TAG = "MainView"
 
-    private fun get_sex(): Int? {
+    private fun getSex(): Int? {
         var sex: Int? = null
         doAsync {
             val db = Room.databaseBuilder(
@@ -33,7 +35,7 @@ class MainView : Fragment() {
         return sex
     }
 
-    private fun get_weight(): Double? {
+    private fun getWeight(): Double? {
         var weight: Double? = null
         doAsync {
             val db = Room.databaseBuilder(
@@ -48,7 +50,7 @@ class MainView : Fragment() {
 
     }
 
-    private fun get_all_users() : Array<UserInfo>
+    private fun getAllUsers() : Array<UserInfo>
     {
         var users : Array<UserInfo> = arrayOf()
         doAsync {
@@ -68,10 +70,24 @@ class MainView : Fragment() {
         return users
     }
 
-    fun calculateDrunkness(sex: Int?, Wt: Double?): Double
+    private fun getTimeLimit(): String
+    {
+        val cal: Calendar = Calendar.getInstance()
+        cal.time = Date()
+        cal.add(Calendar.HOUR, -12)
+        return cal.time.toString()
+    }
+
+    private fun convertToSD(size: Double, percent: Double): Double
+    {
+        /* 0.789 is density of ethanol at room temperature */
+        return size * percent * 0.789
+    }
+
+    fun calculatePerMils(sex: Int?, Wt: Double?): Double
     {
         /*
-         * Permilles are calculated with formula:
+         * Per mils are calculated with formula:
          *      (((0.806 * SD * 1.2) / (BW * Wt)) - MR * DP) * 10
          *
          * Where:
@@ -96,32 +112,33 @@ class MainView : Fragment() {
         var Wt: Double = 0.0
         var MR: Double = 0.0
         var DP: Double = 0.0
-        var permilles: Double = 0.0
+        var perMils: Double = 0.0
 
-        /* Male */
-        if (sex == 0) {
-            BW = 0.58
-            MR = 0.015
-        /* Female */
-        } else if (sex == 1) {
-            BW = 0.49
-            MR = 0.017
-        } else {
-            /* Never should go here?? */
-            return 100.0
+        /* 0 is male, 1 is female */
+	when (sex) {
+            0 -> { BW = 0.58; MR = 0.015 }
+            1 -> { BW = 0.49; MR = 0.017 }
+            /* We should never go here, what do? */
+            else -> { return 100.0 }
         }
 
-        /*
-         * SD = getDrinks??
-         * DP = getTime??
-         */
+        /* Use only beers from the last 12 hours */
+        val timeLimit: String = getTimeLimit()
 
-        permilles = (((0.806 * SD *1.2) / (BW * Wt)) - MR * DP) * 10
-        if (permilles < 0) {
+        /* Query the beers where timestamp is greater than the timeLimit */
+        // SELECT BEERS WHERE TIMESTAMP >= TIMELIMIT
+
+        /* Convert the beer size and alcohol percent to SD's */
+        //SD = convertToSD(beer.bottle_size, beer.percent)
+
+        /* Calculate the per mils */
+        perMils = (((0.086 * SD * 1.2) / (BW * Wt)) - MR * DP) * 10
+        if (perMils < 0)
             return 0.0
-        }
-        Log.d(TAG, "Permilles : " + permilles)
-        return permilles
+
+        Log.d(TAG, "Permilles : " + perMils)
+
+        return perMils
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -134,9 +151,9 @@ class MainView : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var sex: Int? = get_sex()
-        var weight: Double? = get_weight()
-        var users = get_all_users()
+        var sex: Int? = getSex()
+        var weight: Double? = getWeight()
+        var users = getAllUsers()
 
         var str: String = "\nSex: $sex\nWeight: $weight"
         Log.d("DEBUG", str)
@@ -144,13 +161,15 @@ class MainView : Fragment() {
 
         /* Check if weight and sex is added. Print text if not */
         if (sex == -1 || sex == null || weight == 0.0 || weight == null) {
-            view.welcome.setText("Please input user info!")
-            view.welcome.setTextColor(resources.getColor(R.color.error))
+            view.welcome.text = "Please input user info!"
+            view.welcome.setTextColor(ContextCompat.getColor(
+                context!!, R.color.error))
         } else {
-            var x: Double = calculateDrunkness(sex, weight)
+            var x: Double = calculatePerMils(sex, weight)
             var str: String = "Your bloods alcoholic content is: $x\n"
             view.welcome.text = str
-            view.welcome.setTextColor(resources.getColor(R.color.allGood))
+            view.welcome.setTextColor(ContextCompat.getColor(
+                context!!, R.color.allGood))
         }
 
         view.btn_addBeer.setOnClickListener {
