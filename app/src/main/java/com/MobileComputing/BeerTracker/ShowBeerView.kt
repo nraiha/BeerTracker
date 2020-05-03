@@ -6,14 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.room.Room
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.view_map.*
 import org.jetbrains.anko.toast
 import kotlinx.android.synthetic.main.view_show_beer.*
 import kotlinx.android.synthetic.main.view_show_beer.view.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
-import kotlin.properties.Delegates
 
 class ShowBeerView : Fragment() {
 
@@ -59,18 +56,6 @@ class ShowBeerView : Fragment() {
     override fun onResume() {
         super.onResume()
         refreshList()
-    }
-
-    private fun getBeers() : List<BeerItem>
-    {
-        var beers : List<BeerItem> = listOf()
-        doAsync {
-            val db = Room.databaseBuilder(activity!!.applicationContext,
-                AppDatabase::class.java, "beers").build()
-            beers = db.beerDao().getBeers()
-            db.close()
-        }
-        return beers
     }
 
     private fun refreshList() {

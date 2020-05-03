@@ -2,7 +2,6 @@ package com.MobileComputing.BeerTracker
 
 import android.app.Activity
 import android.content.pm.PackageManager
-import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
@@ -29,9 +28,9 @@ class MapView : Fragment(), OnMapReadyCallback {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var latLong: LatLng
     private var TAG = "MapView"
-    var beers : List<BeerItem> = listOf()
-    var locations : ArrayList<LatLng> = arrayListOf()
-    var beerNames : ArrayList<String> = arrayListOf()
+    private var beers : List<BeerItem> = listOf()
+    private var locations : ArrayList<LatLng> = arrayListOf()
+    private var beerNames : ArrayList<String> = arrayListOf()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?)
@@ -129,19 +128,10 @@ class MapView : Fragment(), OnMapReadyCallback {
             val db = Room.databaseBuilder(activity!!.applicationContext,
                 AppDatabase::class.java, "beers").build()
             beers = db.beerDao().getBeers()
-            if(beers.isNotEmpty())
-            {
-                Log.v(TAG, "Yes entries")
-            }
-            else
-            {
-                Log.v(TAG, "No entries")
-            }
             db.close()
-
             for (beer in beers)
             {
-                var latLong = LatLng(beer.coord_lat, beer.coord_long)
+                val latLong = LatLng(beer.coord_lat, beer.coord_long)
                 locations.add(latLong)
                 beer.beer_name?.let { beerNames.add(it) }
                 Log.v(TAG, "Inserted latitude: " + beer.coord_lat +
